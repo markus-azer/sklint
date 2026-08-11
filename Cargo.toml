@@ -1,0 +1,31 @@
+[package]
+name = "sklint"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "A static analyzer for agent skills"
+license = "MIT"
+repository = "https://github.com/markus-azer/sklint"
+keywords = ["skills", "lint", "cli", "static-analysis", "agents"]
+categories = ["command-line-utilities", "development-tools::testing"]
+
+[[bin]]
+name = "sklint"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+gray_matter = "0.2"
+owo-colors = { version = "4", features = ["supports-colors"] }
+serde = { version = "1", features = ["derive"] }
+tiktoken-rs = "0.6"
+toml = "0.8"
+
+[dev-dependencies]
+assert_cmd = "2"
+predicates = "3"
+
+[profile.release]
+lto = "thin"
+strip = true
