@@ -1,0 +1,5 @@
+[thresholds]
+desc_max = 10
+
+[rules]
+desc-when = "off"
