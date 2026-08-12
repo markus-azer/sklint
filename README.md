@@ -5,10 +5,10 @@ A static analyzer for agent skills. It reads every `SKILL.md` in a folder and re
 ## Install
 
 ```sh
-# npm (any Node project). Downloads a prebuilt binary.
-pnpm add -D sklint
+# npm (any Node project). Downloads a prebuilt binary. Command is `sklint`.
+pnpm add -D @markusazer/sklint
 # or
-npm i -D sklint
+npm i -D @markusazer/sklint
 
 # from source (Rust)
 cargo install sklint
