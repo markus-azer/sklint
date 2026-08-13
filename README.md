@@ -8,6 +8,9 @@ A static analyzer for agent skills. It reads every `SKILL.md` in a folder and re
 # prebuilt binary, no toolchain (macOS/Linux)
 curl -fsSL https://raw.githubusercontent.com/markus-azer/sklint/main/install.sh | sh
 
+# Homebrew (macOS/Linux)
+brew install markus-azer/tap/sklint
+
 # npm, as a global command
 npm i -g @markusazer/sklint
 
@@ -78,6 +81,17 @@ Every key is optional. Anything you leave out keeps its default. No file means a
 - `0` all skills clean
 - `1` at least one error-level finding
 - `2` could not run: no `SKILL.md` found, or a file could not be read
+
+## Help wanted
+
+sklint is young and looking for contributors and maintainers. Open directions:
+
+- More rules (frontmatter, allowed-tools, examples).
+- JSON or SARIF output for CI.
+- A GitHub Action wrapper.
+- Autofix and a baseline file.
+
+Adding a rule is one line in the checks array. Open an issue to start.
 
 ## License
 
