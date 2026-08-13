@@ -27,6 +27,7 @@ const SUMMARY_SEP: &str = " · ";
 #[derive(Parser)]
 #[command(name = "sklint", version, about)]
 struct Cli {
+    /// Directory to lint. Defaults to the paths in sklint.toml (.claude/skills).
     path: Option<PathBuf>,
 }
 
@@ -42,13 +43,27 @@ fn main() -> ExitCode {
 
 fn run() -> Result<ExitCode> {
     let cli = Cli::parse();
-    let root = cli.path.unwrap_or_else(|| PathBuf::from("."));
+    let config_dir = cli.path.clone().unwrap_or_else(|| PathBuf::from("."));
 
-    let cfg = Config::load(&root).map_err(|e| anyhow::anyhow!("invalid sklint.toml: {e}"))?;
-    let skills = discover(&root);
+    let cfg = Config::load(&config_dir).map_err(|e| anyhow::anyhow!("invalid sklint.toml: {e}"))?;
+
+    // An explicit path overrides the configured roots.
+    let roots: Vec<PathBuf> = match cli.path {
+        Some(dir) => vec![dir],
+        None => cfg.paths.iter().map(|p| config_dir.join(p)).collect(),
+    };
+
+    let mut skills: Vec<PathBuf> = roots.iter().flat_map(|root| discover(root)).collect();
+    skills.sort();
+    skills.dedup();
 
     if skills.is_empty() {
-        anyhow::bail!("no SKILL.md found under {}", root.display());
+        let searched = roots
+            .iter()
+            .map(|r| r.display().to_string())
+            .collect::<Vec<_>>()
+            .join(", ");
+        anyhow::bail!("no SKILL.md found under {searched}");
     }
 
     let mut errors = 0usize;

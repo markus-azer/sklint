@@ -30,11 +30,24 @@ impl Default for Thresholds {
     }
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+const DEFAULT_SKILLS_DIR: &str = ".claude/skills";
+
+#[derive(Debug, Clone, Deserialize)]
 #[serde(default)]
 pub struct Config {
     pub thresholds: Thresholds,
     pub rules: HashMap<String, Severity>,
+    pub paths: Vec<String>,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            thresholds: Thresholds::default(),
+            rules: HashMap::new(),
+            paths: vec![DEFAULT_SKILLS_DIR.to_string()],
+        }
+    }
 }
 
 impl Config {

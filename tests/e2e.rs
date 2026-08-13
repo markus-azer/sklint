@@ -196,6 +196,50 @@ fn no_skills_exits_2() {
     assert.code(2).stderr(contains("no SKILL.md"));
 }
 
+const VALID_SKILL: &str = "---\nname: widget\ndescription: Use when widgeting.\n---\nBody.\n";
+
+#[test]
+fn no_arg_lints_default_claude_skills() {
+    let dir = temp_dir("default-loc");
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(dir.join(".claude/skills/widget")).unwrap();
+    std::fs::write(dir.join(".claude/skills/widget/SKILL.md"), VALID_SKILL).unwrap();
+
+    let assert = Command::cargo_bin("sklint")
+        .unwrap()
+        .current_dir(&dir)
+        .env("NO_COLOR", "1")
+        .assert();
+
+    let _ = std::fs::remove_dir_all(&dir);
+    assert
+        .success()
+        .stdout(contains("widget"))
+        .stdout(contains("1 skills"));
+}
+
+#[test]
+fn config_paths_override_default_location() {
+    let dir = temp_dir("cfg-paths");
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(dir.join("myskills/widget")).unwrap();
+    std::fs::write(dir.join("myskills/widget/SKILL.md"), VALID_SKILL).unwrap();
+    std::fs::create_dir_all(dir.join(".claude/skills/decoy")).unwrap();
+    std::fs::write(dir.join(".claude/skills/decoy/SKILL.md"), VALID_SKILL).unwrap();
+    std::fs::write(dir.join("sklint.toml"), "paths = [\"myskills\"]\n").unwrap();
+
+    let assert = Command::cargo_bin("sklint")
+        .unwrap()
+        .current_dir(&dir)
+        .env("NO_COLOR", "1")
+        .assert();
+
+    let _ = std::fs::remove_dir_all(&dir);
+    assert
+        .stdout(contains("1 skills"))
+        .stdout(contains("decoy").not());
+}
+
 #[test]
 fn help_renders() {
     Command::cargo_bin("sklint")
