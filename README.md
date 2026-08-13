@@ -26,7 +26,8 @@ The command is always `sklint`. Prebuilt binaries cover Linux x64/arm64, macOS x
 ## Usage
 
 ```sh
-sklint path/to/skills
+sklint                 # lint the configured paths (default .claude/skills)
+sklint path/to/skills  # or point it at any directory
 ```
 
 ```
@@ -57,9 +58,11 @@ Each skill is parsed once into its frontmatter, body, and bundled files. Every r
 
 ## Configure
 
-Add an optional `sklint.toml` next to the skills. It tunes thresholds and per-rule severity.
+Add an optional `sklint.toml`. It sets where skills live, plus thresholds and per-rule severity.
 
 ```toml
+paths = [".claude/skills"]   # directories to scan (default)
+
 [thresholds]
 body_max_lines = 300
 
@@ -68,7 +71,7 @@ mush = "off"          # off | warn | error
 desc-when = "error"
 ```
 
-Every key is optional. Anything you leave out keeps its default, and no file means all defaults.
+Every key is optional. Anything you leave out keeps its default. No file means all defaults. A path passed on the command line overrides `paths`.
 
 ## Exit codes
 
